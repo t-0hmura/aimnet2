@@ -103,10 +103,10 @@ def nblists_torch_pbc(coord: Tensor, cell: Tensor, cutoff: float) -> Tuple[Tenso
     conn_mat = ((d < cutoff) & (d > 0.1)).transpose(0, 1).contiguous()
     if device.type == 'cuda' and _numba_cuda_available:
         _fn = _nblist_pbc_cuda
+        mat_idxj, mat_pad, mat_S = _fn(conn_mat, shifts) 
     else:
         _fn = _nblist_pbc_cpu
-    mat_idxj, mat_pad, mat_S = _fn(conn_mat, shifts)
-    return mat_idxj, mat_pad, mat_S
+        mat_idxj, mat_pad, mat_S = _fn(conn_mat, shifts, device=device)
 
 
 def _calc_shifts(inv_distances, cutoff):

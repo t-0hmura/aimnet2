@@ -29,8 +29,12 @@ class AIMNet2Calculator:
     keys_out = ['energy', 'charges', 'forces', 'hessian', 'stress']
     atom_feature_keys = ['coord', 'numbers', 'charges', 'forces']
     
-    def __init__(self, model: Union[str, torch.nn.Module] = 'aimnet2'):
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    def __init__(self, model: Union[str, torch.nn.Module] = 'aimnet2', device=None):
+        if device is None:
+            self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        else:
+            self.device = device
+
         if isinstance(model, str):
             p = get_model_path(model)
             self.model = torch.jit.load(p, map_location=self.device)
